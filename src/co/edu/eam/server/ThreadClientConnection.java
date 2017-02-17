@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import co.edu.eam.controller.LoginController;
+import co.edu.eam.dao.UsersDAO;
 import co.edu.eam.dto.RegistrarDTO;
 
 public class ThreadClientConnection implements Runnable {
@@ -18,6 +20,8 @@ public class ThreadClientConnection implements Runnable {
 	ObjectInputStream entrada;
 	
 	Server server;
+	
+	LoginController lg = new LoginController();
 	
 		
 	public ThreadClientConnection(Socket con) {
@@ -51,6 +55,8 @@ public class ThreadClientConnection implements Runnable {
 					
 					System.out.println("leo objeto");
 					System.out.println(re.getUser() + " "+ re.getPassword());
+					
+					lg.addUser(re);
 					
 					salida.writeObject(dto);
 					
