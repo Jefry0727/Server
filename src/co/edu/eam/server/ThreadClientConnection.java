@@ -42,6 +42,7 @@ public class ThreadClientConnection implements Runnable {
 			entrada = new ObjectInputStream(con.getInputStream());
 			
 			while(true){
+				
 				Object dto = entrada.readObject();
 				
 				if(dto instanceof RegistrarDTO){
@@ -51,7 +52,7 @@ public class ThreadClientConnection implements Runnable {
 					System.out.println("leo objeto");
 					System.out.println(re.getUser() + " "+ re.getPassword());
 					
-					
+					salida.writeObject(dto);
 					
 				}
 				

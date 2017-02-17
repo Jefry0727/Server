@@ -44,8 +44,22 @@ public class Users implements Serializable {
 
     public Users() {
     }
+    
+    
 
-    public Users(Integer id) {
+    /**
+	 * @param username
+	 * @param password
+	 */
+	public Users(String username, String password) {
+		super();
+		this.username = username;
+		this.password = password;
+	}
+
+
+
+	public Users(Integer id) {
         this.id = id;
     }
 

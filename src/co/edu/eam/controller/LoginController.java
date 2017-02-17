@@ -1,6 +1,7 @@
 package co.edu.eam.controller;
 
 import co.edu.eam.dao.UsersDAO;
+import co.edu.eam.dto.RegistrarDTO;
 import co.edu.eam.model.Users;
 
 public class LoginController  extends Conexion{
@@ -20,7 +21,13 @@ public class LoginController  extends Conexion{
 		
 	}
 	
-	public boolean addUser(){
+	public boolean addUser(Object obj){
+		
+		RegistrarDTO dto = (RegistrarDTO) obj;
+		
+		user = new Users(dto.getUser(),dto.getPassword());
+		
+		dao.create(user);
 		
 		return true;
 		
