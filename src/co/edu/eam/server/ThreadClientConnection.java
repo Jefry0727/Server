@@ -5,6 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
+import co.edu.eam.dto.RegistrarDTO;
+
 public class ThreadClientConnection implements Runnable {
 
 	private String user;
@@ -40,12 +42,19 @@ public class ThreadClientConnection implements Runnable {
 			entrada = new ObjectInputStream(con.getInputStream());
 			
 			while(true){
-				
 				Object dto = entrada.readObject();
-				System.out.println("leo objeto");
-				System.out.println(dto);
 				
-				salida.writeObject(dto);
+				if(dto instanceof RegistrarDTO){
+					
+					RegistrarDTO re = (RegistrarDTO)dto;
+					
+					System.out.println("leo objeto");
+					System.out.println(re.getUser() + " "+ re.getPassword());
+					
+					
+					
+				}
+				
 				
 			}
 			
