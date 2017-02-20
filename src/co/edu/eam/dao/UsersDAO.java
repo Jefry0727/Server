@@ -20,119 +20,65 @@ import javax.persistence.criteria.Root;
  *
  * @author jefry
  */
+import co.edu.eam.controller.SingletonEntityManager;
+
+import java.io.Serializable;
+import javax.persistence.EntityManager;
+
+/**
+ *
+ * @author ALVARO JAVIER L S
+ */
 public class UsersDAO implements Serializable {
+    
+    protected EntityManager em;
 
-    public UsersDAO(EntityManagerFactory emf) {
-        this.emf = emf;
-    }
-    private EntityManagerFactory emf = null;
-
-    public EntityManager getEntityManager() {
-        return emf.createEntityManager();
-    }
-
-    public void create(Users users) {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            em.persist(users);
-            em.getTransaction().commit();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
+    public UsersDAO() {
+    	
+        this.em = SingletonEntityManager.getInstance();
+        
     }
 
-    public void edit(Users users) throws NonexistentEntityException, Exception {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            users = em.merge(users);
-            em.getTransaction().commit();
-        } catch (Exception ex) {
-            String msg = ex.getLocalizedMessage();
-            if (msg == null || msg.length() == 0) {
-                Integer id = users.getId();
-                if (findUsers(id) == null) {
-                    throw new NonexistentEntityException("The users with id " + id + " no longer exists.");
-                }
-            }
-            throw ex;
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
+
+    public void create(Users usuario) {
+        em.getTransaction().begin();
+        em.persist(usuario);
+        em.getTransaction().commit();
     }
 
-    public void destroy(Integer id) throws NonexistentEntityException {
-        EntityManager em = null;
-        try {
-            em = getEntityManager();
-            em.getTransaction().begin();
-            Users users;
-            try {
-                users = em.getReference(Users.class, id);
-                users.getId();
-            } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The users with id " + id + " no longer exists.", enfe);
-            }
-            em.remove(users);
-            em.getTransaction().commit();
-        } finally {
-            if (em != null) {
-                em.close();
-            }
-        }
+    public void edit(Users usuario) {
+        em.getTransaction().begin();
+        em.merge(usuario);
+        em.getTransaction().commit();
     }
 
-    public List<Users> findUsersEntities() {
-        return findUsersEntities(true, -1, -1);
+    public void destroy(Users usuario) {
+        em.getTransaction().begin();
+        em.remove(usuario);
+        em.getTransaction().commit();
     }
 
-    public List<Users> findUsersEntities(int maxResults, int firstResult) {
-        return findUsersEntities(false, maxResults, firstResult);
-    }
-
-    private List<Users> findUsersEntities(boolean all, int maxResults, int firstResult) {
-        EntityManager em = getEntityManager();
-        try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Users.class));
-            Query q = em.createQuery(cq);
-            if (!all) {
-                q.setMaxResults(maxResults);
-                q.setFirstResult(firstResult);
-            }
-            return q.getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
-    public Users findUsers(Integer id) {
-        EntityManager em = getEntityManager();
-        try {
-            return em.find(Users.class, id);
-        } finally {
-            em.close();
-        }
-    }
-
-    public int getUsersCount() {
-        EntityManager em = getEntityManager();
-        try {
-            CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Users> rt = cq.from(Users.class);
-            cq.select(em.getCriteriaBuilder().count(rt));
-            Query q = em.createQuery(cq);
-            return ((Long) q.getSingleResult()).intValue();
-        } finally {
-            em.close();
-        }
+    public Users findUsuario(String usu) {
+    	
+        return em.find(Users.class, usu);
     }
     
+    public Boolean finsUser(Users usu){
+    	
+    	Query query =   em.createNamedQuery("Users.findByUsername");
+    	List us = query.setParameter("username", usu.getUsername()).setParameter("password", usu.getPassword())
+    			.getResultList();
+    	
+    	if(us.size() > 0){
+    		
+    		return true;
+    		
+    	}else{
+    		
+    		return false;
+    	}
+    	
+    	
+    }
+
 }

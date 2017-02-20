@@ -12,13 +12,13 @@ import co.edu.eam.model.Users;
  *
  * @author jefry
  */
-public class UserController extends Conexion{
+public class UserController {
     
     private UsersDAO dao;
     private Users user;
 
     public UserController() {
-        dao = new UsersDAO(factory);
+        dao = new UsersDAO();
     }
     
 }

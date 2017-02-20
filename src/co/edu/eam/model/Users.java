@@ -19,18 +19,18 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author jefry
+ * @author Marcela
  */
 @Entity
 @Table(name = "users")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u")
-    , @NamedQuery(name = "Users.findById", query = "SELECT u FROM Users u WHERE u.id = :id")
-    , @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username and u.password = :password")
-    , @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password")})
+    @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
+    @NamedQuery(name = "Users.findById", query = "SELECT u FROM Users u WHERE u.id = :id"),
+    @NamedQuery(name = "Users.findByUsername", query = "SELECT u FROM Users u WHERE u.username = :username and u.password = :password"),
+    @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password"),
+    @NamedQuery(name = "Users.findByIp", query = "SELECT u FROM Users u WHERE u.ip = :ip")})
 public class Users implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,22 +41,24 @@ public class Users implements Serializable {
     private String username;
     @Column(name = "password")
     private String password;
+    @Column(name = "ip")
+    private String ip;
 
     public Users() {
     }
-    
-    
 
+    
     /**
 	 * @param username
 	 * @param password
+	 * @param ip
 	 */
 	public Users(String username, String password) {
 		super();
 		this.username = username;
 		this.password = password;
+		
 	}
-
 
 
 	public Users(Integer id) {
@@ -85,6 +87,14 @@ public class Users implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 
     @Override

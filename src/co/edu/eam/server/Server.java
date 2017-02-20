@@ -20,11 +20,7 @@ public class Server implements Runnable {
 			
 			ServerSocket server = new ServerSocket(45000);
 			
-			while(true){
-				
-				
-					
-				
+			while(true){															
 				
 			System.out.println("Esperando peticion....");
 				
@@ -44,6 +40,11 @@ public class Server implements Runnable {
 			ex.printStackTrace();
 			
 		}
+		
+	}
+	
+	public void agregarCliente(ThreadClientConnection clientConnection){
+		
 		
 	}
 

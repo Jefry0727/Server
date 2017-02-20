@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.LinkedList;
 
 import co.edu.eam.controller.LoginController;
 import co.edu.eam.dao.UsersDAO;
+import co.edu.eam.dto.LoginDTO;
 import co.edu.eam.dto.RegistrarDTO;
 
 public class ThreadClientConnection implements Runnable {
@@ -15,11 +17,13 @@ public class ThreadClientConnection implements Runnable {
 	
 	private Socket con;
 	
-	ObjectOutputStream salida;
+	private ObjectOutputStream salida;
 	
-	ObjectInputStream entrada;
+	private ObjectInputStream entrada;
 	
-	Server server;
+	private Server server;
+	
+	Boolean login;
 	
 	LoginController lg = new LoginController();
 	
@@ -45,31 +49,82 @@ public class ThreadClientConnection implements Runnable {
 			
 			entrada = new ObjectInputStream(con.getInputStream());
 			
-			while(true){
+			System.out.println("conexion establecida:" + con.getInetAddress().getCanonicalHostName());
+			
+			Object dto = entrada.readObject();
+			
+			if(dto instanceof RegistrarDTO){
 				
-				Object dto = entrada.readObject();
+				boolean msj = true;
 				
-				if(dto instanceof RegistrarDTO){
+				RegistrarDTO resgisDTO = (RegistrarDTO)dto;
+				
+				resgisDTO.setIp( con.getInetAddress().getCanonicalHostName());
+				
+				boolean res = lg.addUser(resgisDTO);
+				
+				if(res){
 					
-					RegistrarDTO re = (RegistrarDTO)dto;
+					msj = true;// "Se ha registrado Correctamente";
 					
-					System.out.println("leo objeto");
-					System.out.println(re.getUser() + " "+ re.getPassword());
+				}else{
 					
-					lg.addUser(re);
-					
-					salida.writeObject(dto);
+					msj = false;// "El usuario no se puede registrar";
 					
 				}
 				
+				enviarMensaje(msj);
 				
 			}
+			
+			if(dto instanceof LoginDTO){
+				
+				LoginDTO loginDTO = (LoginDTO) dto;
+				
+				System.out.println("leo objeto");
+				
+				System.out.println(loginDTO.getUser() + " "+ loginDTO.getPassword());
+				
+				loginDTO.setIp( con.getInetAddress().getCanonicalHostName());
+				
+				login =  lg.findUser(loginDTO);
+				
+				enviarMensaje(login);
+				
+				
+			}
+			
+			
+				
+//			while(true){
+//				
+//			
+//					
+//					
+//					
+//				}
+				
+				
+			
 			
 		} catch (IOException | ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
+	}
+	
+	
+	public void enviarMensaje(Object obj){
+		
+		try {
+			
+			salida.writeObject(obj);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
