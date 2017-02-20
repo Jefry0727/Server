@@ -1,3 +1,4 @@
+package co.edu.eam.main;
 import co.edu.eam.server.Server;
 
 public class Main {
